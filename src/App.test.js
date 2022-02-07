@@ -7,7 +7,6 @@ test("renders learn react link", () => {
   expect(linkElement).toBeInTheDocument();
 });
 
-
 // Test and code T&C "popover"
 
 // Test and code summary text

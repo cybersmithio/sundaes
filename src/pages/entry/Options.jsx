@@ -5,18 +5,18 @@ import ScoopOption from "./ScoopOption";
 
 export default function Options({ optionType }) {
   const [items, setItems] = useState([]);
+  // optionType is 'scoops' or 'toppings'.  Ideally make this an ENUM
 
-  // optionType is 'scoops' or 'toppings'
   useEffect(() => {
     axios
-      .get("http://localhost:3030/${optionType}")
+      .get(`http://localhost:3030/${optionType}`)
       .then((response) => setItems(response.data))
       .catch((error) => {
         //TODO: handle error response
       });
   }, [optionType]);
 
-  // TODO: replace null with ToppingOption once avaialble
+  // TODO: replace null with ToppingOption once available
   const ItemComponent = optionType === "scoops" ? ScoopOption : null;
 
   const optionItems = items.map((item) => (
