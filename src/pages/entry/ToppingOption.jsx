@@ -1,4 +1,4 @@
-import Col from "react-bootstrap/Col";
+import { Form, Col} from "react-bootstrap";
 
 export default function ToppingOption({ name, imagePath }) {
   return (
@@ -8,6 +8,10 @@ export default function ToppingOption({ name, imagePath }) {
         style={{ width: "75%" }}
         src={`http://localhost:3030/${imagePath}`}
       />
+      <Form.Group>
+        <Form.Label>{name}</Form.Label>
+        <Form.Check/>
+      </Form.Group>
     </Col>
   );
 }
