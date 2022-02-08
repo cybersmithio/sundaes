@@ -55,7 +55,7 @@ export function OrderDetailsProvider(props) {
         setTotals({
             scoops: formatCurrency(scoopsSubtotal),
             toppings: formatCurrency(toppingsSubtotal),
-            grantTotal: formatCurrency(grandTotal)
+            grandTotal: formatCurrency(grandTotal)
         });
     }, [optionCounts]);
 
