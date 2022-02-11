@@ -1,8 +1,11 @@
-import { screen, render, waitFor } from "../../../test-utils/testing-library-utils";
+import {
+  screen,
+  render,
+  waitFor,
+} from "../../../test-utils/testing-library-utils";
 import OrderEntry from "../OrderEntry";
 import { rest } from "msw";
 import { server } from "../../../mocks/server";
-
 
 test("handles errors for scoops and toppings routes", async () => {
   server.resetHandlers(
@@ -14,9 +17,9 @@ test("handles errors for scoops and toppings routes", async () => {
     )
   );
 
-  render(<OrderEntry />);
+  render(<OrderEntry setOrderPhase={jest.fn()} />);
 
-  await waitFor(async() => {
+  await waitFor(async () => {
     const alerts = await screen.findAllByRole("alert");
     expect(alerts).toHaveLength(2);
   });
