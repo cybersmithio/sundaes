@@ -95,3 +95,42 @@ test("Order phases for happy path", async () => {
   await screen.findByRole("spinbutton", { name: /Vanilla/i });
   await screen.findByRole("checkbox", { name: /Cherries/i });
 });
+
+test("happy path making sure that toppings section does not show if no topping were chosen", async () => {
+  render(<App />);
+
+  // add scoops but not toppings
+  const vanillaScoop = await screen.findByRole("spinbutton", {
+    name: /vanilla/i,
+  });
+  userEvent.clear(vanillaScoop);
+  userEvent.type(vanillaScoop, "3");
+
+  const grandTotal = await screen.findByText(/grand total: \$/i);
+  expect(grandTotal).toHaveTextContent("6.00");
+
+  // submit order (this should go to Mock Service Worker)
+  const submitButton = await screen.findByRole("button");
+  userEvent.click(submitButton);
+
+  // check that summary info is correct
+  const pageTitle = await screen.findByRole("heading", {
+    name: /order summary/i,
+  });
+  expect(pageTitle).toBeInTheDocument();
+
+  const scoopTotal = await screen.findByRole("heading", {
+    name: /scoops: \$/i,
+  });
+  expect(scoopTotal).toHaveTextContent("6.00");
+
+  const noToppingTotal = screen.queryByRole("heading", {
+    name: /toppings: \$/i,
+  });
+  expect(noToppingTotal).not.toBeInTheDocument();
+
+  const orderSummaryTotal = await screen.findByRole("heading", {
+    name: /grand total: \$/i,
+  });
+  expect(orderSummaryTotal).toHaveTextContent("6.00");
+});
