@@ -6,6 +6,11 @@ import {
 import OrderEntry from "../OrderEntry";
 import { rest } from "msw";
 import { server } from "../../../mocks/server";
+import userEvent from "@testing-library/user-event";
+import {
+  OrderDetailsProvider,
+  useOrderDetails,
+} from "../../../context/OrderDetails";
 
 test("handles errors for scoops and toppings routes", async () => {
   server.resetHandlers(
@@ -17,10 +22,32 @@ test("handles errors for scoops and toppings routes", async () => {
     )
   );
 
-  render(<OrderEntry setOrderPhase={jest.fn()} />);
+  render(<OrderEntry setOrderPhase={jest.fn()} />, {
+    wrapper: OrderDetailsProvider,
+  });
 
   await waitFor(async () => {
     const alerts = await screen.findAllByRole("alert");
     expect(alerts).toHaveLength(2);
   });
+});
+
+test("Check that no scoops will disable order button", async () => {
+  render(<OrderEntry setOrderPhase={jest.fn()} />, {
+    wrapper: OrderDetailsProvider,
+  });
+
+  const orderButton = screen.getByRole("button", { name: /order sundae/i });
+  expect(orderButton).toBeDisabled();
+
+  const vanillaScoops = await screen.findByRole("spinbutton", {
+    name: /vanilla/i,
+  });
+  userEvent.clear(vanillaScoops);
+  userEvent.type(vanillaScoops, "2");
+  expect(orderButton).toBeEnabled();
+
+  userEvent.clear(vanillaScoops);
+  userEvent.type(vanillaScoops, "0");
+  expect(orderButton).toBeDisabled();
 });
