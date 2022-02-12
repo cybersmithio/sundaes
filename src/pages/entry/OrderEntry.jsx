@@ -5,15 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function OrderEntry({ setOrderPhase }) {
   const [orderDetails] = useOrderDetails();
-  const [disableButton, setDisableButton] = useState(1);
-
-  useEffect(() => {
-    if (orderDetails.totals.scoops === "$0.00") {
-      setDisableButton(1);
-    } else {
-      setDisableButton(0);
-    }
-  }, [orderDetails.totals.scoops]);
+  const orderButtonDisabled = orderDetails.totals.scoops === "$0.00";
 
   return (
     <div>
@@ -21,7 +13,10 @@ export default function OrderEntry({ setOrderPhase }) {
       <Options optionType="scoops" />
       <Options optionType="toppings" />
       <h2>Grand total: {orderDetails.totals.grandTotal}</h2>
-      <Button onClick={() => setOrderPhase("review")} disabled={disableButton}>
+      <Button
+        onClick={() => setOrderPhase("review")}
+        disabled={orderButtonDisabled}
+      >
         Order Sundae!
       </Button>
     </div>
