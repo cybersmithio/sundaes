@@ -1,45 +1,47 @@
-import {useEffect, useState} from 'react';
-import axios from 'axios';
-import Button from 'react-bootstrap/Button';
-import {useOrderDetails} from '../../context/OrderDetails';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Button from "react-bootstrap/Button";
+import { useOrderDetails } from "../../context/OrderDetails";
+import AlertBanner from "../common/AlertBanner";
 
-export default function OrderConfirmation({setOrderPhase}) {
-    const [, , resetOrder] = useOrderDetails();
-    const [orderNumber, setOrderNumber]=useState(null);
+export default function OrderConfirmation({ setOrderPhase }) {
+  const [, , resetOrder] = useOrderDetails();
+  const [orderNumber, setOrderNumber] = useState(null);
+  const [error, setError] = useState(false);
 
-    useEffect(() => {
-        axios
-            .post(`http://localhost:3030/orders`)
-            .then((response) => {
-                setOrderNumber(response.data.orderNumber);
-            })
-            .catch((error) => {
-                //TODO: handle error here
-            });
-    }, []);
+  useEffect(() => {
+    axios
+      .post(`http://localhost:3030/orders`)
+      .then((response) => {
+        setOrderNumber(response.data.orderNumber);
+      })
+      .catch((error) => setError(true));
+  }, []);
 
-    function handleClick() {
-        resetOrder();
+  if (error) {
+    return <AlertBanner />;
+  }
 
-        setOrderPhase('inProgress');
-    }
+  function handleClick() {
+    resetOrder();
 
-    if (orderNumber) {
-        return (
-            <div style={{ textAlign: 'center' }}>
-                <h1>Thank You!</h1>
-                <p>Your order number is {orderNumber}</p>
-                <p style={{ fontSize: '25%' }}>
-                    as per our terms and conditions, nothing will happen now
-                </p>
-                <Button onClick={handleClick}>Create new order</Button>
-            </div>
-        );
-    } else {
-        return <div>Loading</div>;
-    }
+    setOrderPhase("inProgress");
+  }
 
-    return <div></div>;
+  if (orderNumber) {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <h1>Thank You!</h1>
+        <p>Your order number is {orderNumber}</p>
+        <p style={{ fontSize: "25%" }}>
+          as per our terms and conditions, nothing will happen now
+        </p>
+        <Button onClick={handleClick}>Create new order</Button>
+      </div>
+    );
+  } else {
+    return <div>Loading</div>;
+  }
+
+  return <div></div>;
 }
-
-
